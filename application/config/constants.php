@@ -36,6 +36,15 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+/*
+|--------------------------------------------------------------------------
+| FRONT-END CONSTANTS
+|--------------------------------------------------------------------------
+*/
+define('APP_NAME',	'iStockSample');
+define('ROOT_PATH',	$_SERVER['DOCUMENT_ROOT']);
+define('RECORDS_PER_PAGE',	5);
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

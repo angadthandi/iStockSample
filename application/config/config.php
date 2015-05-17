@@ -16,7 +16,7 @@
 | environments.
 |
 */
-$config['base_url'] = '';
+$config['base_url'] = 'http://localhost/iStockSample/';
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ $config['base_url'] = '';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';//'index.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -226,7 +226,7 @@ $config['cache_path'] = '';
 | MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = '3d51be6a4301075d05c62288c7d54832';
 
 /*
 |--------------------------------------------------------------------------
@@ -358,7 +358,7 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
-
+ini_set('date.timezone', 'America/Edmonton');
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

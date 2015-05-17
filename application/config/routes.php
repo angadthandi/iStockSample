@@ -38,8 +38,26 @@
 |
 */
 
-$route['default_controller'] = "welcome";
-$route['404_override'] = '';
+$route['default_controller'] = "UsersController/index";
+$route['404_override'] = 'BaseController/pageNotFound';
+
+$route['(:num)'] = "UsersController/index/$1";
+$route['signup'] = "UsersController/signup";
+$route['login'] = "UsersController/login";
+$route['logout'] = "UsersController/logout";
+$route['dashboard'] = "UsersController/dashboard";
+$route['dashboard/(:num)'] = "UsersController/dashboard/$1";
+$route['users'] = "UsersController/usersListing";
+$route['users/(:num)'] = "UsersController/usersListing/$1";
+
+$route['createnewpost'] = "PostsController/createNewPost";
+$route['viewpost/(:any)'] = "PostsController/viewPost/$1";
+$route['viewpost/(:any)/(:num)'] = "PostsController/viewPost/$1/$2";
+$route['deletepost/(:any)'] = "PostsController/deletePost/$1";
+$route['editpost/(:any)'] = "PostsController/editPost/$1";
+
+$route['createnewcomment'] = "CommentsController/createNewComment";
+$route['deletecomment'] = "CommentsController/deleteComment";
 
 
 /* End of file routes.php */
