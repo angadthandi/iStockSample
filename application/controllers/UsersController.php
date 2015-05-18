@@ -26,7 +26,6 @@ class UsersController extends BaseController {
 	{
 		$headerData = parent::getHeaderData();
 		$footerData = parent::getFooterData();
-		$data = array();
 		
 		$headerData['title'] = APP_NAME.'::HomePage';
 		
@@ -89,15 +88,14 @@ class UsersController extends BaseController {
 	**/
 	public function usersListing($curr_page=0)
 	{
+		$loggeduser = parent::getLoggedUser();
 		$headerData = parent::getHeaderData();
 		$footerData = parent::getFooterData();
-		$data = array();
 		
 		$headerData['title'] = APP_NAME.'::Users';
 		
 		$data = array();
-		$loggeduser = NULL; $loggeduserId = NULL;
-		$loggeduser = unserialize($this->session->userdata('loggeduser'));
+		$loggeduserId = NULL;
 		if(!empty($loggeduser)) {
 			$loggeduserId = $loggeduser['id'];
 		}
@@ -332,6 +330,42 @@ class UsersController extends BaseController {
 		
 		$this->load->view('front/base/header', $headerData);
 		$this->load->view('front/users/dashboard', $data);
+		$this->load->view('front/base/footer', $footerData);
+	}
+
+	/**
+	 * User Change Password
+	**/
+	public function changePassword()
+	{
+		$loggeduser = parent::getLoggedUser();
+		$headerData = parent::getHeaderData();
+		$footerData = parent::getFooterData();
+		$data = array();
+		
+		$headerData['title'] = APP_NAME.'::Change Password';
+		
+		if($this->input->post('newPassword')){
+			$oldPassword = $this->input->post('oldPassword', TRUE);
+			$newPassword = $this->input->post('newPassword', TRUE);
+			
+			$userArr = $this->usersmodel->getUserById($loggeduser['id']);
+			if(!empty($userArr)){
+				if($userArr['password']==md5($oldPassword)){
+					$this->db->where('id', $loggeduser['id']);
+					$this->db->update('users', array('password'=>md5($newPassword)));
+					
+					$this->session->set_flashdata('notification', 'Password updated successfully.');
+					header('location:'.$this->config->item('base_url').'changepassword'); exit;
+				} else {
+					$this->session->set_flashdata('notification', 'Invalid Old Password.');
+					header('location:'.$this->config->item('base_url').'changepassword'); exit;
+				}
+			}
+		}
+		
+		$this->load->view('front/base/header', $headerData);
+		$this->load->view('front/users/changePassword', $data);
 		$this->load->view('front/base/footer', $footerData);
 	}
 	

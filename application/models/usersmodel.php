@@ -34,7 +34,7 @@ class usersmodel extends CI_Model
 	public function getUserById($userId=NULL)
 	{
 		if(!empty($userId)) {
-			$this->db->select('u.id, u.user_type_id, u.email, ut.user_type AS userType');
+			$this->db->select('u.id, u.user_type_id, u.email, u.password, ut.user_type AS userType');
 			$this->db->select("DATE_FORMAT(u.date_created, '%d-%b-%Y') AS date_created", FALSE);
 			$this->db->from($this->usersTable.' AS u');
 			$this->db->join($this->userTypesTable.' AS ut', 'u.user_type_id=ut.id', 'left');

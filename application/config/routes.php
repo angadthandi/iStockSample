@@ -49,6 +49,7 @@ $route['dashboard'] = "UsersController/dashboard";
 $route['dashboard/(:num)'] = "UsersController/dashboard/$1";
 $route['users'] = "UsersController/usersListing";
 $route['users/(:num)'] = "UsersController/usersListing/$1";
+$route['changepassword'] = "UsersController/changePassword";
 
 $route['createnewpost'] = "PostsController/createNewPost";
 $route['viewpost/(:any)'] = "PostsController/viewPost/$1";
@@ -58,6 +59,7 @@ $route['editpost/(:any)'] = "PostsController/editPost/$1";
 
 $route['createnewcomment'] = "CommentsController/createNewComment";
 $route['deletecomment'] = "CommentsController/deleteComment";
+$route['editcomment'] = "CommentsController/editComment";
 
 
 /* End of file routes.php */

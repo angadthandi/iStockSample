@@ -26,7 +26,7 @@ function frmcheck(form) {
 <h2>Edit Post</h2>
 <form name="post_form" action="<?php echo $this->config->item('base_url').'editpost/'.$this->uri->segment(2); ?>" method="post" accept-charset="utf-8" onsubmit="return frmcheck(this);">
 	<div class="form-group">
-		<input class="form-control" type="text" placeholder="Title" name="title" id="title" value="<?php echo $post['title']; ?>" />
+		<input class="form-control" type="text" placeholder="Title" name="title" id="title" value="<?php echo $post['title']; ?>" maxlength="200" />
 	</div>
 	<div class="form-group">
 		<textarea class="form-control" placeholder="Description..." name="description" id="description"><?php echo $post['description']; ?></textarea>

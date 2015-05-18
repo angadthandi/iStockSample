@@ -10,14 +10,14 @@ function frmcheck(form) {
 	
 	
 	if( trim_all( Name.val() ) == "" ){
-		alert("Please enter Name.");
+		alert("Please enter your Name.");
 		Name.focus();
 		return false;
 	}
 	if( trim_all( Name.val() ) != "" ){
 		var iChars = "1234567890.!@#$%^&*()+=-[]\\\';,/{}|\":<>?";
-		for (var i = 0; i < document.signup_form.Name.value.length; i++) {
-			if (iChars.indexOf(document.signup_form.Name.value.charAt(i)) != -1) {
+		for (var i = 0; i < document.signup_form.name.value.length; i++) {
+			if (iChars.indexOf(document.signup_form.name.value.charAt(i)) != -1) {
 				alert ("Only alphabets are allowed in Name.");
 				document.signup_form.Name.focus();
 				return false;
@@ -25,22 +25,22 @@ function frmcheck(form) {
 		}
 	}
 	if( trim_all( Email.val() ) == "" ){
-		alert("Please enter Email.");
+		alert("Please enter your Email.");
 		Email.focus();
 		return false;
 	}
 	else if(!emailreg.test( Email.val() )) {
-		alert('Please enter a valid Email address.');
+		alert('Please enter a valid Email.');
 		Email.focus();
 		return false;
 	}
 	if( trim_all( Password.val() ) == "" ){
-		alert("Please enter Password.");
+		alert("Please enter your Password.");
 		Password.focus();
 		return false;
 	}
 	else if( Password.val().length < 6 ){
-		alert("Passsword must be minimum 6 characters.");
+		alert("Passsword must be of minimum 6 characters.");
 		Password.focus();
 		return false;
 	}
@@ -50,12 +50,12 @@ function frmcheck(form) {
 		return false;
 	}	
 	else if( Password.val() != Confirm_Password.val()){
-		alert("Password & Confirm Password doesn't match.");
+		alert("Password & Confirm Password do not match.");
 		Confirm_Password.focus();
 		return false;
 	}
 	if( trim_all( UserType.val() ) == "" ){
-		alert("Please select UserType.");
+		alert("Please select your UserType.");
 		UserType.focus();
 		return false;
 	}
@@ -70,13 +70,13 @@ function frmcheck(form) {
 <h2>Registration</h2>
 <form name="signup_form" action="<?php echo $this->config->item('base_url').'signup'; ?>" method="post" accept-charset="utf-8" onsubmit="return frmcheck(this);">
 	<div class="form-group">
-		<input class="form-control" type="text" placeholder="Name" name="name" id="name" value="<?php echo $this->input->post('name'); ?>" />
+		<input class="form-control" type="text" placeholder="Name" name="name" id="name" value="<?php echo $this->input->post('name'); ?>" maxlength="50" />
 	</div>
 	<div class="form-group">
-		<input class="form-control" type="text" placeholder="Email" name="email" id="email" value="<?php echo $this->input->post('email'); ?>" />
+		<input class="form-control" type="text" placeholder="Email" name="email" id="email" value="<?php echo $this->input->post('email'); ?>" maxlength="100" />
 	</div>
 	<div class="form-group">
-		<input class="form-control" type="password" placeholder="Password" name="password" value="" id="password" />
+		<input class="form-control" type="password" placeholder="Password" name="password" value="" id="password" maxlength="20" />
 	</div>
 	<div class="form-group">
 		<input class="form-control" type="password" placeholder="Confirm Password" name="confirm_password" value="" id="confirm_password" />

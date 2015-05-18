@@ -24,7 +24,9 @@ class PostsController extends BaseController {
 	public function createNewPost()
     {
 		$loggeduser = parent::getLoggedUser();
-		
+		if($loggeduser['user_type_id']!=1){
+			header('location:'.$this->config->item('base_url')); exit;
+		}
 		$headerData = parent::getHeaderData();
 		$footerData = parent::getFooterData();
 		$headerData['title'] = APP_NAME.'::Create New Post';
@@ -64,6 +66,10 @@ class PostsController extends BaseController {
 	**/
 	public function editPost($encPostId=NULL)
 	{
+		$loggeduser = parent::getLoggedUser();
+		if($loggeduser['user_type_id']!=1){
+			header('location:'.$this->config->item('base_url')); exit;
+		}
 		$headerData = parent::getHeaderData();
 		$footerData = parent::getFooterData();
 		$headerData['title'] = APP_NAME.'::Edit Post';

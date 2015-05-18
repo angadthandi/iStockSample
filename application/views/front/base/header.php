@@ -54,7 +54,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li <?php if($this->uri->segment(1)==''){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url'); ?>">Home</a></li>
-        <li <?php if($this->uri->segment(1)=='users'){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url').'users'; ?>">Users</a></li>
+        <?php if($this->session->userdata('loggeduser')) { ?>
+			<li <?php if($this->uri->segment(1)=='users'){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url').'users'; ?>">Users</a></li>
+		<?php } ?>
       </ul>
 	  
       <ul class="nav navbar-nav navbar-right">
@@ -63,6 +65,7 @@
 				if($loggeduser['user_type_id'] == 1){ ?>
 					<li <?php if($this->uri->segment(1)=='dashboard'){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url'); ?>dashboard">Dashboard</a></li>
 			<?php } ?>
+			<li <?php if($this->uri->segment(1)=='changepassword'){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url'); ?>changepassword">Change Password</a></li>
 			<li><a href="<?php echo $this->config->item('base_url'); ?>logout">Logout</a></li>
         <?php } else { ?>
 			<li <?php if($this->uri->segment(1)=='signup'){ ?>class="active"<?php } ?>><a href="<?php echo $this->config->item('base_url'); ?>signup">Signup</a></li>

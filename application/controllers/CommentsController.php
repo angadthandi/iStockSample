@@ -43,17 +43,25 @@ class CommentsController extends BaseController {
 				
 				$commentArr = $this->commentsmodel->getCommentById($commentId);
 				if(!empty($commentArr)){
-					$commentHtml = '<div class="col-sm-12" id="commentDiv_'.$commentArr["id"].'">';
-					$commentHtml .= '<a href="javascript:void(0);" class="list-group-item">';
+					$commentHtml = '<div class="col-sm-12 commentClass" id="commentDiv_'.$commentArr["id"].'">';
+					$commentHtml .= '<a href="javascript:void(0);" class="list-group-item staticAreaClass" id="commentHtml_'.$commentArr["id"].'">';
 					$commentHtml .= '<div class="hover-btn">
-									<button type="button" class="close deleteCommentClass" data-dismiss="alert" id="deleteComment_'.$commentArr["id"].'">
+									<button title="Delete Comment" type="button" class="close deleteCommentClass" data-dismiss="alert" id="deleteComment_'.$commentArr["id"].'">
 									<span aria-hidden="true">×</span>
 									<span class="sr-only">Close</span>
 									</button>
 									</div>';
-					$commentHtml .= '<p class="list-group-item-text">'.$commentArr['description'].'</p>';
+					$commentHtml .= '<p class="list-group-item-text" id="commentDescription_'.$commentArr["id"].'">'.wordwrap($commentArr['description'], 8, "\n", true).'</p>';
 					$commentHtml .= '<p class="list-group-item-text">Commented By : '.$commentArr['createdByName'].'</p>';
 					$commentHtml .= '<p class="list-group-item-text">Date : '.$commentArr['date_created'].'</p>';
+					$commentHtml .= '<button title="Edit Comment" type="button" class="btn btn-default btn-sm editCommentClass" id="editComment_'.$commentArr["id"].'">';
+					$commentHtml .= '<span class="glyphicon glyphicon-edit"></span> Edit Comment';
+					$commentHtml .= '</button>';
+					$commentHtml .= '</a>';
+					$commentHtml .= '<a href="javascript:void(0);" class="list-group-item hide dynamicAreaClass" id="editCommentText_'.$commentArr["id"].'">';
+					$commentHtml .= '<textarea class="form-control" id="commentText_'.$commentArr["id"].'">'.$commentArr['description'].'</textarea>';
+					$commentHtml .= '<button type="button" class="btn btn-default btn-sm saveCommentClass" id="editCommentBtn_'.$commentArr["id"].'">Save</button>';
+					$commentHtml .= '<button type="button" class="btn btn-default btn-sm cancelCommentClass">Cancel</button>';
 					$commentHtml .= '</a>';
 					$commentHtml .= '</div>';
 				}
@@ -84,6 +92,32 @@ class CommentsController extends BaseController {
 			}
 		}
 		echo json_encode(array('status'=>$status)); exit;
+	}
+    
+    /**
+	 * This function is meant to edit a comment.
+	**/
+	public function editComment()
+	{
+		$status = -1;
+		$updatedComment = '';
+		$loggeduser = NULL;
+		$loggeduser = unserialize($this->session->userdata('loggeduser'));
+		if(!empty($loggeduser)){
+			$commentId = $this->input->post('commentId',TRUE);
+			$commentVal = $this->input->post('commentVal',TRUE);
+			if(!empty($commentId) && !empty($commentVal)) {
+				// check if user has rights to delete a comment, i.e. the post or comment has been posted by the user
+				$commentArr = $this->commentsmodel->getCommentById($commentId);
+				if(!empty($commentArr) && ($loggeduser['id']==$commentArr['commentedById'] || $loggeduser['id']==$commentArr['postCreatedById'])) {
+					$this->db->where('id', $commentId);
+					$this->db->update('comments', array('description'=>$commentVal));
+					$updatedComment = wordwrap($commentVal, 8, "\n", true);
+					$status = 1;
+				}
+			}
+		}
+		echo json_encode(array('status'=>$status, 'updatedComment'=>$updatedComment)); exit;
 	}
 	
 }

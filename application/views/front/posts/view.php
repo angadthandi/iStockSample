@@ -1,7 +1,7 @@
 <script type="text/javascript">
 $(function(){
 	/**
-	 * add new comment
+	 * ADD new comment
 	**/
 	$('#addCommentBtn').click(function(){
 		var comment = $('#comment').val();
@@ -25,6 +25,9 @@ $(function(){
 					if(data.status == 1) {
 						$('#comment').val('');
 						$( "#commentList" ).prepend( data.commentHtml );
+						$('html, body').animate({
+							scrollTop: $("#commentList").offset().top
+						}, 100);
 						return false;
 					} else {
 						alert(errorMsg);
@@ -36,7 +39,7 @@ $(function(){
 	});
 	
 	/**
-	 * delete comment
+	 * DELETE comment
 	**/
 	$(document).on('click', '.deleteCommentClass', function() {
 		var getCurrId = $(this).attr('id').split('_');
@@ -66,6 +69,72 @@ $(function(){
 	});
 	
 	/**
+	 * EDIT comment
+	**/
+	$(document).on('click', '.editCommentClass', function() {
+		$('.commentClass').each(function(){
+			$(".staticAreaClass").removeClass('hide');
+			$(".dynamicAreaClass").addClass('hide');
+		});
+		
+		var getCurrId = $(this).attr('id').split('_');
+		var commentId = getCurrId[1];
+		$("#commentHtml_"+commentId).addClass('hide');
+		$("#editCommentText_"+commentId).removeClass('hide');
+		
+		var textAreaVal = $("#commentText_"+commentId).val();
+		$("#commentText_"+commentId).focus();
+		$("#commentText_"+commentId).val('');
+		$("#commentText_"+commentId).val(textAreaVal);
+	});
+	
+	/**
+	 * SAVE edited comment
+	**/
+	$(document).on('click', '.saveCommentClass', function() {
+		var getCurrId = $(this).attr('id').split('_');
+		var commentId = getCurrId[1];
+		var commentVal = $('#commentText_'+commentId).val();
+		if(trim_all(commentVal)==''){
+			alert('Please enter your comment!');
+			$('#commentText_'+commentId).focus();
+			return false;
+		} else {
+			// ajax call to update comment
+			$.ajax({
+				'url':'<?php echo $this->config->item('base_url').'editcomment'; ?>',
+				'type':'POST',
+				'dataType':'json',
+				'data':{'commentId':commentId, 'commentVal':commentVal},
+				error: function() {
+					alert(errorMsg);
+					return false;
+				},
+				success: function(data) {
+					if(data.status == 1) {
+						$("#commentDescription_"+commentId).html(data.updatedComment);
+						$(".staticAreaClass").removeClass('hide');
+						$(".dynamicAreaClass").addClass('hide');
+						return false;
+					} else {
+						alert(errorMsg);
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	/**
+	 * CANCEL edit comment
+	**/
+	$(document).on('click', '.cancelCommentClass', function() {
+		$(".staticAreaClass").removeClass('hide');
+		$(".dynamicAreaClass").addClass('hide');
+	});
+	
+	
+	/**
 	 * delete post
 	**/
 	$('#deletePost').click(function(){
@@ -92,10 +161,10 @@ $(function(){
 <p class="notice"><?php echo $notice; ?></p>
 <?php endif;?>
 
-<h2><?php echo $post['title']; ?></h2>
+<h2><?php echo wordwrap($post['title'], 8, "\n", true); ?></h2>
 <div class="list-group">
 	<a href="javascript:void(0);" class="list-group-item">
-		<p class="list-group-item-text"><?php echo $post['description']; ?></p>
+		<p class="list-group-item-text"><?php echo wordwrap($post['description'], 8, "\n", true); ?></p>
 		<p class="list-group-item-text">Posted By : <?php echo $post['createdByName']; ?></p>
 		<p class="list-group-item-text">Date : <?php echo $post['date_created']; ?></p>
 	</a>
@@ -104,33 +173,44 @@ $(function(){
 
 <h3>Comment(s)</h3>
 
+<div class="row" id="commentList">
+	<?php if(!empty($comments)){ ?>
+		<?php foreach($comments as $val) { ?>
+			<div class="col-sm-12 commentClass" id="commentDiv_<?php echo $val['id']; ?>">
+				<a href="javascript:void(0);" class="list-group-item staticAreaClass" id="commentHtml_<?php echo $val['id']; ?>">
+					<?php if(($post['createdById']==$loggeduser['id']) || ($val['commentedById']==$loggeduser['id'])){ ?>
+						<div class="hover-btn">
+							<button title="Delete Comment" type="button" class="close deleteCommentClass" data-dismiss="alert" id="deleteComment_<?php echo $val['id']; ?>">
+								<span aria-hidden="true">×</span>
+								<span class="sr-only">Close</span>
+							</button>
+						</div>
+					<?php } ?>
+					<p class="list-group-item-text" id="commentDescription_<?php echo $val['id']; ?>"><?php echo wordwrap($val['description'], 8, "\n", true); ?></p>
+					<p class="list-group-item-text">Commented By : <?php echo $val['createdByName']; ?></p>
+					<p class="list-group-item-text">Date : <?php echo $val['date_created']; ?></p>
+					<button title="Edit Comment" type="button" class="btn btn-default btn-sm editCommentClass" id="editComment_<?php echo $val['id']; ?>">
+					  <span class="glyphicon glyphicon-edit"></span> Edit Comment
+					</button>
+				</a>
+				<a href="javascript:void(0);" class="list-group-item hide dynamicAreaClass" id="editCommentText_<?php echo $val['id']; ?>">
+					<textarea class="form-control" id="commentText_<?php echo $val['id']; ?>"><?php echo $val['description']; ?></textarea>
+					<button type="button" class="btn btn-default btn-sm saveCommentClass" id="editCommentBtn_<?php echo $val['id']; ?>">Save</button>
+					<button type="button" class="btn btn-default btn-sm cancelCommentClass">Cancel</button>
+				</a>
+			</div>
+		<?php } ?>
+		<div class="col-sm-12">
+			<?php echo $pager; ?>
+		</div>
+	<?php } ?>
+</div>
+
 <?php if(!empty($loggeduser)){ ?>
+	<hr />
 	<div class="form-group">
 		<textarea class="form-control" placeholder="Comment..." name="comment" id="comment"></textarea>
 	</div>
 	<a class="btn btn-info btn-lg" href="javascript:void(0);" id="addCommentBtn" />Add Comment</a>
 	<hr />
 <?php } ?>
-
-<div class="row" id="commentList">
-	<?php if(!empty($comments)){ ?>
-		<?php foreach($comments as $val) { ?>
-			<div class="col-sm-12" id="commentDiv_<?php echo $val['id']; ?>">
-				<a href="javascript:void(0);" class="list-group-item">
-					<?php if(($post['createdById']==$loggeduser['id']) || ($val['commentedById']==$loggeduser['id'])){ ?>
-						<div class="hover-btn">
-						<button type="button" class="close deleteCommentClass" data-dismiss="alert" id="deleteComment_<?php echo $val['id']; ?>">
-						<span aria-hidden="true">×</span>
-						<span class="sr-only">Close</span>
-						</button>
-						</div>
-					<?php } ?>
-					<p class="list-group-item-text"><?php echo $val['description']; ?></p>
-					<p class="list-group-item-text">Commented By : <?php echo $val['createdByName']; ?></p>
-					<p class="list-group-item-text">Date : <?php echo $val['date_created']; ?></p>
-				</a>
-			</div>
-		<?php } ?>
-		<?php echo $pager; ?>
-	<?php } ?>
-</div>
